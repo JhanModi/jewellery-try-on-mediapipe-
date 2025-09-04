@@ -1,0 +1,773 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>LUXE | Earrings Virtual Try-On</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --gold: #d4af37;
+        --gold-light: #f1e0ac;
+        --gold-dark: #9c833e;
+        --black: #0a0a0a;
+        --black-light: #1a1a1a;
+        --white: #f8f8f8;
+        --transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--black);
+        color: var(--white);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background-image: radial-gradient(
+          circle at 10% 20%,
+          rgba(212, 175, 55, 0.03) 0%,
+          rgba(10, 10, 10, 0) 30%
+        );
+      }
+
+      .header {
+        display: flex;
+        align-items: center;
+        padding: 25px 50px;
+        background: var(--black-light);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        position: relative;
+        z-index: 10;
+      }
+
+      .back-btn {
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold-light) 100%
+        );
+        color: var(--black);
+        padding: 12px 25px;
+        border-radius: 30px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        margin-right: 30px;
+        text-decoration: none;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .back-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      }
+
+      .back-btn i {
+        font-size: 0.9em;
+      }
+
+      .main-title {
+        font-family: "Playfair Display", serif;
+        color: var(--gold-light);
+        font-size: 2.5rem;
+        letter-spacing: 1px;
+        margin: 0 auto;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .main-title::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        max-width: 1600px;
+        margin: 50px auto;
+        padding: 0 50px 80px;
+      }
+
+      .section {
+        flex: 1;
+        background: var(--black-light);
+        padding: 40px;
+        border-radius: 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        transition: var(--transition);
+        min-height: 600px;
+      }
+
+      .section:hover {
+        border-color: rgba(212, 175, 55, 0.3);
+        box-shadow: 0 20px 40px rgba(212, 175, 55, 0.1);
+      }
+
+      .section h2 {
+        font-family: "Playfair Display", serif;
+        color: var(--gold-light);
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+        position: relative;
+        padding-bottom: 10px;
+      }
+
+      .section h2::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 50px;
+        height: 2px;
+        background: var(--gold);
+      }
+
+      .upload-options {
+        display: flex;
+        justify-content: center;
+        gap: 25px;
+        flex-wrap: wrap;
+        margin-bottom: 30px;
+      }
+
+      .upload-btn {
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold-light) 100%
+        );
+        color: var(--black);
+        padding: 14px 28px;
+        border-radius: 30px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+      }
+
+      .upload-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+      }
+
+      .upload-btn i {
+        font-size: 1.1em;
+      }
+
+      .preview-container {
+        width: 100%;
+        height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: var(--black);
+        border-radius: 12px;
+        border: 1px solid rgba(212, 175, 55, 0.1);
+        position: relative;
+        overflow: hidden;
+        margin-top: 20px;
+      }
+
+      .preview-container::before {
+        content: "Preview";
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        color: var(--gold-light);
+        font-size: 0.9rem;
+        opacity: 0.7;
+      }
+
+      .preview-img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        border-radius: 8px;
+        transition: var(--transition);
+        display: none;
+      }
+
+      .error {
+        color: #ff6b6b;
+        margin: 15px 0;
+        min-height: 20px;
+        text-align: center;
+      }
+
+      .earring-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+        width: 100%;
+        margin-top: 20px;
+      }
+
+      .earring-list img {
+        width: 100%;
+        height: 120px;
+        object-fit: contain;
+        cursor: pointer;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+        border-radius: 8px;
+        padding: 15px;
+        background: var(--black);
+        transition: var(--transition);
+      }
+
+      .earring-list img:hover {
+        border-color: var(--gold);
+        transform: scale(1.05);
+        box-shadow: 0 8px 20px rgba(212, 175, 55, 0.2);
+      }
+
+      /* Camera Modal */
+      .camera-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        justify-content: center;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .camera-content {
+        position: relative;
+        background: var(--black-light);
+        padding: 30px;
+        border-radius: 16px;
+        text-align: center;
+        width: 600px;
+        max-width: 90%;
+        border: 1px solid rgba(212, 175, 55, 0.2);
+      }
+
+      .webcam-container {
+        position: relative;
+        width: 100%;
+        height: 400px;
+        margin-bottom: 20px;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      #webcam-video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 8px;
+      }
+
+      .camera-controls {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
+
+      .switch-camera-btn {
+        background: linear-gradient(
+          135deg,
+          var(--gold) 0%,
+          var(--gold-dark) 100%
+        );
+        color: var(--black);
+        padding: 12px 20px;
+        border-radius: 30px;
+        cursor: pointer;
+        border: none;
+        font-weight: 600;
+        transition: var(--transition);
+        box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .switch-camera-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+      }
+
+      .face-guide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .face-guide svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .face-guide ellipse {
+        stroke: var(--gold);
+        stroke-width: 3;
+        fill: none;
+        stroke-dasharray: 10, 5;
+        opacity: 0.7;
+      }
+
+      /* Loading Animation */
+      .loading {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(26, 26, 26, 0.8);
+        z-index: 10;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+      }
+
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid rgba(212, 175, 55, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--gold);
+        animation: spin 1s ease-in-out infinite;
+        margin-bottom: 15px;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      /* Luxury decorative elements */
+      .luxe-decoration {
+        position: fixed;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .luxe-decoration.top-right {
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.03) 0%,
+          transparent 70%
+        );
+      }
+
+      .luxe-decoration.bottom-left {
+        bottom: 0;
+        left: 0;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.02) 0%,
+          transparent 70%
+        );
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1200px) {
+        .container {
+          flex-direction: column;
+          gap: 40px;
+          max-width: 800px;
+        }
+        .section {
+          min-height: auto;
+        }
+        .earring-list {
+          grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        }
+      }
+
+      @media (max-width: 768px) {
+        .header {
+          padding: 20px;
+          flex-direction: column;
+          gap: 15px;
+        }
+        .back-btn {
+          margin-right: 0;
+          margin-bottom: 10px;
+        }
+        .main-title {
+          font-size: 2rem;
+        }
+        .container {
+          padding: 0 20px 40px;
+          margin: 30px auto;
+        }
+        .section {
+          padding: 30px 20px;
+        }
+        .upload-options {
+          flex-direction: column;
+          gap: 15px;
+        }
+        .upload-btn,
+        .switch-camera-btn {
+          width: 100%;
+          justify-content: center;
+        }
+        .preview-container {
+          height: 300px;
+        }
+        .webcam-container {
+          height: 300px;
+        }
+        .camera-controls {
+          flex-direction: column;
+          gap: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Luxury decorative elements -->
+    <div class="luxe-decoration top-right"></div>
+    <div class="luxe-decoration bottom-left"></div>
+
+    <div class="header">
+      <a href="{% url 'home' %}" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+      </a>
+      <h1 class="main-title">Earrings Virtual Try-On</h1>
+    </div>
+
+    <div class="container">
+      <div class="section">
+        <h2>Upload Face Image</h2>
+
+        <div class="upload-options">
+          <label>
+            <div class="upload-btn"><i class="fas fa-image"></i> Browse</div>
+            <input type="file" id="face-input" accept="image/*" hidden />
+          </label>
+
+          <button class="upload-btn" type="button" onclick="openCamera()">
+            <i class="fas fa-camera"></i> Snap
+          </button>
+        </div>
+
+        <p class="error" id="error-msg"></p>
+
+        <div class="preview-container">
+          <div class="loading" id="face-loading">
+            <div class="loading-spinner"></div>
+            <div>Processing your image...</div>
+          </div>
+          <img id="face-preview" class="preview-img" />
+        </div>
+      </div>
+
+      <div class="section">
+        <h2>Select Earring</h2>
+        <div class="earring-list">
+          {% for earring in earring_images %}
+          <img
+            src="{% static 'earrings/' %}{{ earring }}"
+            alt="{{ earring }}"
+            onclick="applyEarring('{{ earring }}')"
+          />
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <!-- Camera Modal -->
+    <div id="camera-modal" class="camera-modal">
+      <div class="camera-content">
+        <div class="webcam-container">
+          <video id="webcam-video" autoplay muted playsinline></video>
+          <div class="face-guide">
+            <svg viewBox="0 0 400 300">
+              <ellipse cx="200" cy="150" rx="100" ry="130" />
+            </svg>
+          </div>
+        </div>
+        <div class="camera-controls">
+          <button class="upload-btn" onclick="switchCamera()">
+            <i class="fas fa-sync-alt"></i>
+          </button>
+          <button class="upload-btn" onclick="capturePhoto()">
+            <i class="fas fa-camera"></i>
+          </button>
+          <button
+            class="upload-btn"
+            style="background: linear-gradient(135deg, #666 0%, #999 100%)"
+            onclick="closeCamera()"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let faceImageData = null;
+      let webcamStream = null;
+      let currentFacingMode = "user"; // 'user' for front camera, 'environment' for back
+
+      // File input handler
+      document
+        .getElementById("face-input")
+        .addEventListener("change", function () {
+          const file = this.files[0];
+          if (!file) return;
+
+          // Show loading animation
+          document.getElementById("face-loading").style.display = "flex";
+          document.getElementById("face-preview").style.display = "none";
+
+          validateFace(file);
+        });
+
+      function openCamera() {
+        document.getElementById("camera-modal").style.display = "flex";
+        const video = document.getElementById("webcam-video");
+
+        // Stop any existing stream
+        if (webcamStream) {
+          webcamStream.getTracks().forEach((track) => track.stop());
+        }
+
+        navigator.mediaDevices
+          .getUserMedia({
+            video: {
+              width: { ideal: 1280 },
+              height: { ideal: 720 },
+              facingMode: currentFacingMode,
+            },
+          })
+          .then((stream) => {
+            webcamStream = stream;
+            video.srcObject = stream;
+          })
+          .catch((err) => {
+            console.error("Error accessing camera:", err);
+
+            // Try opposite camera if one fails
+            currentFacingMode =
+              currentFacingMode === "user" ? "environment" : "user";
+            navigator.mediaDevices
+              .getUserMedia({
+                video: {
+                  width: { ideal: 1280 },
+                  height: { ideal: 720 },
+                  facingMode: currentFacingMode,
+                },
+              })
+              .then((stream) => {
+                webcamStream = stream;
+                video.srcObject = stream;
+              })
+              .catch((err) => {
+                console.error("Error accessing both cameras:", err);
+                alert("Could not access any camera. Please check permissions.");
+                closeCamera();
+              });
+          });
+      }
+
+      function switchCamera() {
+        // Toggle between front and back camera
+        currentFacingMode =
+          currentFacingMode === "user" ? "environment" : "user";
+
+        // Reopen camera with new facing mode
+        openCamera();
+      }
+
+      function closeCamera() {
+        document.getElementById("camera-modal").style.display = "none";
+        if (webcamStream) {
+          webcamStream.getTracks().forEach((track) => track.stop());
+          webcamStream = null;
+        }
+        // Reset to front camera when closing
+        currentFacingMode = "user";
+      }
+
+      function capturePhoto() {
+        const video = document.getElementById("webcam-video");
+        const canvas = document.createElement("canvas");
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext("2d");
+
+        // Only mirror if using front camera
+        if (currentFacingMode === "user") {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Show loading animation
+        document.getElementById("face-loading").style.display = "flex";
+        document.getElementById("face-preview").style.display = "none";
+
+        canvas.toBlob(
+          (blob) => {
+            validateFace(blob);
+          },
+          "image/jpeg",
+          0.95
+        );
+
+        closeCamera();
+      }
+
+      function validateFace(imageFile) {
+        const formData = new FormData();
+        formData.append("image", imageFile);
+
+        fetch("{% url 'validate_face' %}", {
+          method: "POST",
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const errorMsg = document.getElementById("error-msg");
+            const facePreview = document.getElementById("face-preview");
+            const loading = document.getElementById("face-loading");
+
+            loading.style.display = "none";
+
+            if (data.error) {
+              errorMsg.textContent = data.error;
+              facePreview.style.display = "none";
+              faceImageData = null;
+            } else {
+              errorMsg.textContent = "";
+              facePreview.src = "data:image/png;base64," + data.image;
+              facePreview.style.display = "block";
+              faceImageData = imageFile;
+
+              // Small animation when image loads
+              facePreview.style.opacity = "0";
+              facePreview.style.transform = "scale(0.95)";
+              setTimeout(() => {
+                facePreview.style.transition =
+                  "opacity 0.5s ease, transform 0.5s ease";
+                facePreview.style.opacity = "1";
+                facePreview.style.transform = "scale(1)";
+              }, 50);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            document.getElementById("face-loading").style.display = "none";
+            document.getElementById("error-msg").textContent =
+              "An error occurred. Please try again.";
+          });
+      }
+
+      function applyEarring(earringName) {
+        if (!faceImageData) {
+          alert("Please upload or capture a valid face image first.");
+          return;
+        }
+
+        // Show loading on the preview container
+        const loading = document.getElementById("face-loading");
+        loading.style.display = "flex";
+
+        const formData = new FormData();
+        formData.append("image", faceImageData);
+        formData.append("earring_name", earringName);
+
+        fetch("{% url 'apply_earring' %}", {
+          method: "POST",
+          headers: { "X-CSRFToken": "{{ csrf_token }}" },
+          body: formData,
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            loading.style.display = "none";
+
+            if (data.error) {
+              alert(data.error);
+            } else {
+              const facePreview = document.getElementById("face-preview");
+              facePreview.src = "data:image/png;base64," + data.image;
+
+              // Apply animation
+              facePreview.style.opacity = "0";
+              facePreview.style.transform = "scale(0.95)";
+              setTimeout(() => {
+                facePreview.style.transition =
+                  "opacity 0.5s ease, transform 0.5s ease";
+                facePreview.style.opacity = "1";
+                facePreview.style.transform = "scale(1)";
+              }, 50);
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            loading.style.display = "none";
+            alert(
+              "An error occurred while applying the earring. Please try again."
+            );
+          });
+      }
+
+      // Add smooth fade-in animation when page loads
+      document.body.style.opacity = "0";
+      window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+          document.body.style.transition = "opacity 0.8s ease";
+          document.body.style.opacity = "1";
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

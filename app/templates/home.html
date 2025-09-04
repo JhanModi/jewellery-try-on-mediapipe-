@@ -1,0 +1,281 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>LUXE | Virtual Jewellery Try-On</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --gold: #d4af37;
+        --gold-light: #f1e0ac;
+        --gold-dark: #9c833e;
+        --black: #0a0a0a;
+        --black-light: #1a1a1a;
+        --white: #f8f8f8;
+        --transition: all 0.5s cubic-bezier(0.215, 0.61, 0.355, 1);
+      }
+
+      body {
+        font-family: "Montserrat", sans-serif;
+        background: var(--black);
+        color: var(--white);
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+        overflow-x: hidden;
+        background-image: radial-gradient(
+          circle at 10% 20%,
+          rgba(212, 175, 55, 0.03) 0%,
+          rgba(10, 10, 10, 0) 30%
+        );
+        text-align: center; /* Ensures all text is centered by default */
+      }
+
+      .header-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 80px 0 40px;
+      }
+
+      h1 {
+        font-size: 3.5rem;
+        color: var(--gold);
+        font-family: "Playfair Display", serif;
+        font-weight: 500;
+        letter-spacing: 1.5px;
+        position: relative;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1::after {
+        content: "";
+        position: absolute;
+        bottom: -15px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 3px;
+        background: linear-gradient(
+          90deg,
+          transparent,
+          var(--gold),
+          transparent
+        );
+      }
+
+      .options {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin: 60px auto;
+        max-width: 1400px;
+        gap: 50px;
+        padding: 30px;
+      }
+
+      .image-option {
+        position: relative;
+        width: 380px;
+        height: 500px;
+        cursor: pointer;
+        overflow: hidden;
+        border-radius: 16px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+        transition: var(--transition);
+        background: var(--black-light);
+        border: 1px solid rgba(212, 175, 55, 0.1);
+      }
+
+      .image-option::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(212, 175, 55, 0.1) 0%,
+          rgba(0, 0, 0, 0.4) 100%
+        );
+        z-index: 1;
+        opacity: 0;
+        transition: var(--transition);
+      }
+
+      .image-option img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: var(--transition);
+        transform-origin: center;
+      }
+
+      .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        color: var(--white);
+        font-size: 2.2rem;
+        font-family: "Playfair Display", serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        z-index: 2;
+        transition: var(--transition);
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .overlay i {
+        font-size: 2rem;
+        margin-bottom: 15px;
+        color: var(--gold-light);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: var(--transition);
+        transition-delay: 0.1s;
+      }
+
+      .image-option:hover::before {
+        opacity: 1;
+      }
+
+      .image-option:hover img {
+        filter: brightness(0.7) blur(1px);
+        transform: scale(1.05);
+      }
+
+      .image-option:hover .overlay {
+        opacity: 1;
+      }
+
+      .image-option:hover .overlay i {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .image-option:hover {
+        transform: translateY(-15px);
+        box-shadow: 0 25px 50px rgba(212, 175, 55, 0.15);
+        border-color: rgba(212, 175, 55, 0.3);
+      }
+
+      a {
+        text-decoration: none;
+        color: inherit;
+      }
+
+      /* Luxury decorative elements */
+      .luxe-decoration {
+        position: fixed;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .luxe-decoration.top-right {
+        top: 0;
+        right: 0;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.03) 0%,
+          transparent 70%
+        );
+      }
+
+      .luxe-decoration.bottom-left {
+        bottom: 0;
+        left: 0;
+        width: 400px;
+        height: 400px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 175, 55, 0.02) 0%,
+          transparent 70%
+        );
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 1200px) {
+        .options {
+          gap: 30px;
+        }
+        .image-option {
+          width: 320px;
+          height: 450px;
+        }
+      }
+
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2.5rem;
+        }
+        .header-container {
+          margin: 60px 0 30px;
+        }
+        .options {
+          gap: 25px;
+          padding: 15px;
+        }
+        .image-option {
+          width: 280px;
+          height: 380px;
+        }
+        .overlay {
+          font-size: 1.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Luxury decorative elements -->
+    <div class="luxe-decoration top-right"></div>
+    <div class="luxe-decoration bottom-left"></div>
+
+    <div class="header-container">
+      <h1>Virtual Try-On</h1>
+    </div>
+
+    <div class="options">
+      <a href="{% url 'necklace_tryon' %}" class="image-option">
+        <img src="{% static 'home_necklace.jpg' %}" alt="Necklace" />
+        <div class="overlay">
+          <i class="fas fa-gem"></i>
+          Try Necklace
+        </div>
+      </a>
+
+      <a href="{% url 'ring_tryon' %}" class="image-option">
+        <img src="{% static 'home_ring.jpg' %}" alt="Ring" />
+        <div class="overlay">
+          <i class="far fa-gem"></i>
+          Try Rings
+        </div>
+      </a>
+
+      <a href="{% url 'earrings' %}" class="image-option">
+        <img src="{% static 'home_earring.jpg' %}" alt="Earrings" />
+        <div class="overlay">
+          <i class="fas fa-ring"></i>
+          Try Earrings
+        </div>
+      </a>
+    </div>
+  </body>
+</html>
